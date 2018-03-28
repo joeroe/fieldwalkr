@@ -14,3 +14,5 @@ LazyData: TRUE
 Imports:
   spatstat (>= 1.43),
   akima
+URL: https://github.com/joeroe/fieldwalkr
+BugReports: https://github.com/joeroe/fieldwalkr/issues
