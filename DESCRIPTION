@@ -1,0 +1,16 @@
+Package: fieldwalkr
+Type: Package
+Title: Spatial Sampling and Survey Simulation Tools
+Version: 0.1
+Date: 2016-02-21
+Authors@R: person("Joe", "Roe", email = "jwg983@hum.ku.dk",
+  role = c("aut", "cre"))
+Description: fieldwalkr is a simulation framework for spatial surveys 
+    (fieldwalking in archaeologists' jargon), intended to be useful for
+    exploring, designing, and evaluation sampling strategies.
+Depends: R (>= 3.2.2)
+License: CC0
+LazyData: TRUE
+Imports:
+  spatstat (>= 1.43),
+  akima
