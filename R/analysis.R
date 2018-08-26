@@ -10,6 +10,7 @@
 #   quadrats
 # TODO: Rename. This is more than a type conversion really.
 #' @export
+#' @importFrom spatstat as.ppp
 as.ppp.quadratcount <- function(from) {
   tess <- attr(from, "tess")
   switch(tess$type,
