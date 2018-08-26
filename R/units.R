@@ -1,3 +1,38 @@
+#' Title
+#'
+#' @param frame
+#' @param orientation
+#' @param density
+#' @param size
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' @importFrom magrittr %>%
+grid <- function(frame, density = NULL, size = NULL, orientation = 0) {
+  if (!missing(density)) {
+    grid <- sf::st_make_grid(frame, n = density)
+  }
+
+  else if (!missing(size)) {
+    grid <- sf::st_make_grid(frame, cellsize = size)
+  }
+
+  #if(orientation != 0) {
+  #  crs <- sf::st_crs(grid)
+  #  grid <- grid * rotation(orientation)
+  #  sf::st_crs(grid) <- crs
+  #}
+
+  grid %>%
+    sf::st_intersection(frame) %>%
+    sf::st_sf() %>%
+    dplyr::mutate(id = dplyr::row_number()) %>%
+    return()
+}
+
 #' Generate a random mosaic
 #'
 #' @description

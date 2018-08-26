@@ -10,17 +10,18 @@ Description: fieldwalkr is a simulation framework for exploring, designing, and
   archaeology jargon).
 License: MIT + file LICENSE
 LazyData: TRUE
-Depends: R (>= 3.2.2)
-Imports: dplyr,
-  spatstat (>= 1.43),
+Depends: R (>= 3.2.2),
+Imports: spatstat (>= 1.43),
+  magrittr,
+  dplyr,
+  sf,
   akima,
   rlang,
   Rdpack,
-    checkmate,
-    deldir,
-    sf,
-    lwgeom,
-    purrr
+  checkmate,
+  deldir,
+  lwgeom,
+  purrr
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack
 URL: https://github.com/joeroe/fieldwalkr

@@ -20,3 +20,12 @@ st_as_sf.deldir <- function(dd, extract = c("tiles", "triangles")) {
     dplyr::mutate(id = dplyr::row_number()) %>%
     return()
 }
+
+rotation <- function(degrees) {
+  degrees %>%
+    degrees_to_radians() %>%
+    {matrix(c(cos(.), sin(.), -sin(.), cos(.)), 2, 2)} %>%
+    return()
+}
+
+degrees_to_radians <- function(d) (d * pi) / 180
