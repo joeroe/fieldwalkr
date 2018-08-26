@@ -3,6 +3,7 @@
 # Grid out a window with a specified grid size (in map units)
 # Returns a spatstat::tess object with the grid (tessalation)
 # TODO: non-rectangular windows
+#' @export
 grid <- function(win, size.x, size.y) {
   if(win$type == "rectangle") {
     win.xdim <- (max(win$xrange) - min(win$xrange)) * win$units$multiplier
@@ -23,6 +24,7 @@ grid <- function(win, size.x, size.y) {
 }
 
 # Sample all the squares of a rectangular grid
+#' @export
 sample_all <- function(window, grid.size) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
@@ -37,6 +39,7 @@ sample_all <- function(window, grid.size) {
 }
 
 # Sample n random squares of a rectangular grid
+#' @export
 sample_random <- function(window, n, grid.size) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
@@ -52,6 +55,7 @@ sample_random <- function(window, n, grid.size) {
 }
 
 # Sample n evenly spaced transects on a rectangular grid
+#' @export
 sample_transect <- function(window, n, grid.size, orientation=0) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
