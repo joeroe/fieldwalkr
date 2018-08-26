@@ -9,6 +9,7 @@
 # Convert quadratcount to point patterns by randomly distributing points within
 #   quadrats
 # TODO: Rename. This is more than a type conversion really.
+#' @export
 as.ppp.quadratcount <- function(from) {
   tess <- attr(from, "tess")
   switch(tess$type,
@@ -53,6 +54,7 @@ as.ppp.quadratcount <- function(from) {
 }
 
 # Interpolate quadratcount values using simple bilinear interpolation (Akima 1978)
+#' @export
 interp_quadratcount <- function(qc) {
   # Extract x, y coordinates and values (z) from quadratcount object
   qc <- t(qc)

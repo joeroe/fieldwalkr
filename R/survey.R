@@ -3,6 +3,7 @@
 # Simulate a survey
 # TODO: If sample is a function:
 # * Call it... or something? Recursively?
+#' @export
 survey <- function(surface, sample, detection.function) {
   obs.f <- quadratcount(surface, tess=sample)
   obs.f[!sample$marks] <- NA

@@ -7,6 +7,7 @@
 # Plot a sample
 #   (Have to do it the long way because plot.tess draws lines rather than
 #   polygons. Like a dick.)
+#' @export
 plot.sample <- function(sample, main, cols=c("white", "lightgreen"),
                         ltys=c("dashed", "solid"), labels=NA) {
   if (missing(main) || is.null(main)) {
@@ -64,6 +65,7 @@ plot.sample <- function(sample, main, cols=c("white", "lightgreen"),
 # Plot a survey (as the sample with labels, like plot.quadratcount)
 # TODO: rewrite properly, (flipping should be fixed)
 # TODO: short.deparse is an internal spatstat function. Very bad idea.
+#' @export
 plot.survey <- function(survey, main) {
   if (missing(main) || is.null(main)) {
     main <- spatstat.utils::short.deparse(substitute(survey))
