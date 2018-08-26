@@ -1,6 +1,7 @@
 # fieldwalkr
 
-`fieldwalkr` is a simulation framework for spatial surveys (fieldwalking in archaeologists' jargon), intended to be useful for exploring, designing, and evaluation sampling strategies.
+`fieldwalkr` is a tool for designing and evaluating sampling strategies in spatial survey (*fieldwalking* in archaeological jargon).
+It contains functions for simulating the effect of different survey units, sampling methods and detection functions on the estimation of randomly generated or observed point processes.
 
 ## Installation
 
@@ -8,10 +9,9 @@
 devtools::install_github("joeroe/fieldwalkr")
 ```
 
-The package is in an early stage of development. I wouldn't recommend writing any code that depends on it yet. 
-
-Plus it's completely undocumented, so that would be hard anyway.
+The package is in an early stage of development.
+I wouldn't recommend writing any serious code that depends on it yet, but you may find some functions useful.
 
 ## Example
 
-See `scripts/lunch_in_the_lab.R` for an example R script.
+See `vignettes/lunch_in_the_lab.R` for an example R script, originally presented at the UCL Institute of Archaeology's *Lunch in the Lab* meeting in February 2016.
