@@ -23,7 +23,7 @@ grid <- function(win, size.x, size.y) {
 }
 
 # Sample all the squares of a rectangular grid
-sample.all <- function(window, grid.size) {
+sample_all <- function(window, grid.size) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
 
@@ -37,7 +37,7 @@ sample.all <- function(window, grid.size) {
 }
 
 # Sample n random squares of a rectangular grid
-sample.random <- function(window, n, grid.size) {
+sample_random <- function(window, n, grid.size) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
 
@@ -52,7 +52,7 @@ sample.random <- function(window, n, grid.size) {
 }
 
 # Sample n evenly spaced transects on a rectangular grid
-sample.transect <- function(window, n, grid.size, orientation=0) {
+sample_transect <- function(window, n, grid.size, orientation=0) {
   # Grid out the window
   tess <- grid(window, grid.size, grid.size)
 
@@ -83,6 +83,6 @@ sample.transect <- function(window, n, grid.size, orientation=0) {
 }
 
 # Generate an adaptive cluster sample
-sample.adaptive.cluster <- function(window, sample.func, criterion.func) {
+sample_adaptive_cluster <- function(window, sample.func, criterion.func) {
   # TODO
 }

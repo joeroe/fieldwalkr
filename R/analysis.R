@@ -53,7 +53,7 @@ as.ppp.quadratcount <- function(from) {
 }
 
 # Interpolate quadratcount values using simple bilinear interpolation (Akima 1978)
-interp.quadratcount <- function(qc) {
+interp_quadratcount <- function(qc) {
   # Extract x, y coordinates and values (z) from quadratcount object
   qc <- t(qc)
   x <- as.vector(col(qc))
