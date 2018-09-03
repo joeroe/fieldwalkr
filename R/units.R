@@ -180,12 +180,16 @@ voronoi <- function(poly, n, warn_multipart = TRUE) {
 #'               be generated (x,y).
 #' @param composite Integer. Higher values take longer, but generate more
 #'                  complex polygons with more sides. See details. Default: 64.
+#' @param square Logical. If `TRUE`, the algorithm tends to create squared
+#'               corners and edges. If this is undesirable, set to `FALSE` (the
+#'               default).
 #'
 #' @details
 #'
 #' `rpolygon()` generates a random tessellation using [mosaic()] and returns a
 #'  random polygon sampled for it. If `composite` > 1, several contiguious tiles
-#'  are dissolved, creating more complex polygons with more sides.
+#'  are dissolved, creating more complex polygons with more sides. The polygon
+#'  may contain holes.
 #'
 #' @return
 #'
@@ -202,7 +206,8 @@ voronoi <- function(poly, n, warn_multipart = TRUE) {
 #' # More complex polygon
 #' polygon <- rpolygon(composite = 8)
 #'
-rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000, composite = 64) {
+rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
+                     composite = 64, square = FALSE) {
   xmin <- origin[1]
   xmax <- origin[1] + sqrt(area*composite*4)
   ymin <- origin[2]
@@ -215,6 +220,8 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000, composite = 64)
     sf::st_sf() %>%
     mosaic(density = 16 * composite) ->
   mosaic
+
+  if (!square) mosaic <- clip_edges(mosaic)
 
   if (composite == 1) {
     mosaic %>%

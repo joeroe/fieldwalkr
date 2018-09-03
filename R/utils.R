@@ -29,3 +29,36 @@ rotation <- function(degrees) {
 }
 
 degrees_to_radians <- function(d) (d * pi) / 180
+
+# Slight modification of sf::st_as_sfc.bbox()
+bbox_as_line <- function(x) {
+  box = sf::st_multilinestring(list(matrix(x[c(1, 2, 3, 2, 3, 4, 1, 4, 1, 2)],
+                                           ncol = 2, byrow = TRUE)))
+  sf::st_sfc(box, crs = sf::st_crs(x))
+}
+
+
+#' Clip edge polygons
+#'
+#' `clip_edges()` takes an sf object and removes polygons that touch its bounding
+#' box.
+#'
+#' @param polygons  Am `sf`` object.
+#'
+#' @return
+#'
+#' An `sf` object.
+#'
+#' @export
+#'
+clip_edges <- function(polygons) {
+  polygons %>%
+    sf::st_bbox() %>%
+    bbox_as_line() %>%
+    sf::st_touches(polygons) ->
+    edges
+
+  polygons %>%
+    dplyr::slice(-edges[[1]]) %>%
+    return()
+}

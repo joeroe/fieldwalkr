@@ -5,7 +5,7 @@
 \title{Random polygon}
 \usage{
 rpolygon(crs = 3395, origin = c(0, 0), area = 1e+05,
-  composite = 64)
+  composite = 64, square = FALSE)
 }
 \arguments{
 \item{crs}{An integer EPSG code specifying the coordinate reference system
@@ -20,6 +20,10 @@ in map units (see \code{crs}).}
 
 \item{composite}{Integer. Higher values take longer, but generate more
 complex polygons with more sides. See details. Default: 64.}
+
+\item{square}{Logical. If \code{TRUE}, the algorithm tends to create squared
+corners and edges. If this is undesirable, set to \code{FALSE} (the
+default).}
 }
 \value{
 An \code{sf} object containing a single polygon.
@@ -30,7 +34,8 @@ Generates a single, random polygon.
 \details{
 \code{rpolygon()} generates a random tessellation using \code{\link[=mosaic]{mosaic()}} and returns a
 random polygon sampled for it. If \code{composite} > 1, several contiguious tiles
-are dissolved, creating more complex polygons with more sides.
+are dissolved, creating more complex polygons with more sides. The polygon
+may contain holes.
 }
 \examples{
 
