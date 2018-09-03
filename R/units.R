@@ -168,3 +168,101 @@ voronoi <- function(poly, n, warn_multipart = TRUE) {
     dplyr::select(id) %>%
     return()
 }
+
+
+#' Random polygon
+#'
+#' Generates a single, random polygon.
+#'
+#' @param crs    An integer EPSG code specifying the coordinate reference system
+#'               of the polygon to be generated.
+#'               Default: 3395 (World Mercator, https://epsg.io/3395)
+#' @param area   Integer. The approximate area of the polygon to be generated,
+#'               in map units (see `crs`).
+#' @param origin Numeric. The approximate origin coordinates of the polygon to
+#'               be generated (x,y).
+#' @param composite Integer. Higher values take longer, but generate more
+#'                  complex polygons with more sides. See details. Default: 64.
+#'
+#' @details
+#'
+#' `rpolygon()` generates a random tessellation using [mosaic()] and returns a
+#'  random polygon sampled for it. If `composite` > 1, several contiguious tiles
+#'  are dissolved, creating more complex polygons with more sides.
+#'
+#' @return
+#'
+#' An `sf` object containing a single polygon.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # Simple polygon
+#' polygon <- rpolygon()
+#' plot(polygon)
+#'
+#' # More complex polygon
+#' polygon <- rpolygon(composite = 8)
+#'
+rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000, composite = 64) {
+  xmin <- origin[1]
+  xmax <- origin[1] + sqrt(area*composite*4)
+  ymin <- origin[2]
+  ymax <- origin[2] + sqrt(area*composite*4)
+  cbind(c(xmin, xmax, xmax, xmin, xmin),
+        c(ymin, ymin, ymax, ymax, ymin)) %>%
+    list() %>%
+    sf::st_polygon() %>%
+    sf::st_sfc(crs = crs) %>%
+    sf::st_sf() %>%
+    mosaic(density = 16 * composite) ->
+  mosaic
+
+  if (composite == 1) {
+    mosaic %>%
+      dplyr::sample_n(1) %>%
+      return()
+  }
+  else {
+    mosaic %>%
+      dplyr::slice(grab_geoms(., sf::st_intersects(.), target = composite)) %>%
+      sf::st_union() %>%
+      return()
+  }
+}
+
+
+#' Grab geometries
+#'
+#' Recursively selects adjacent (etc.) geometries from a geometric predicate
+#' sparse matrix until the target number of polygons is reached.
+#'
+#' @param adjacency  A geometric predicate list, see [sf::geos_binary_pred()]
+#' @param target     Target number of geometries
+#' @param set        Set of geometries already selected
+#'
+#' @return
+#'
+#' A list of indexes.
+#'
+grab_geoms <- function(mosaic, adjacency, target,
+                       set = sample(1:length(adjacency), 1)) {
+
+  if(target > length(adjacency)) {
+    stop("Can't grab more polygons than there are, you silly sausage.")
+  }
+
+  if(length(set) == 1) adj <- adjacency[[set]] # Avoid the "sample surprise" (see ?sample)
+  else adj <- adjacency[[sample(set, 1)]]
+  set <- c(set, sample(adj, target - length(set), replace = TRUE))
+  set <- unique(set)
+
+
+  if (length(set) < target) {
+    return(grab_geoms(mosaic, adjacency, target, set))
+  }
+  else {
+    return(set)
+  }
+}
