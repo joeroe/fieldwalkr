@@ -38,16 +38,14 @@ Voronoi tessellation using a set of uniformly distributed random points and
 Delaunay triangulation.
 }
 \examples{
-library(sf)
-ashe <- read_sf(system.file("shape/nc.shp", package="sf"))[1,]
+frame <- sf::st_sf(rpolygon())
 
 # Fixed number of units using Voronoi tesselation
-units <- mosaic(ashe, density = 50, method = voronoi)
+units <- mosaic(frame, density = 50, method = voronoi)
 plot(units)
 
 # Average unit area
-library(units)
-units <- mosaic(ashe, area = 25000000, method = voronoi)
+units <- mosaic(frame, area = 20000, method = voronoi)
 plot(units)
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/units.R
 \name{grid}
 \alias{grid}
-\title{Title}
+\title{Grid}
 \usage{
 grid(frame, density = NULL, size = NULL, orientation = 0)
 }
@@ -10,7 +10,7 @@ grid(frame, density = NULL, size = NULL, orientation = 0)
 \item{size}{}
 }
 \description{
-Title
+Grid
 }
 \examples{
 
