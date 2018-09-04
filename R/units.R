@@ -1,9 +1,82 @@
-#' Grid
+# Functions for generating survey units -----------------------------------
+
+#' Random polygon
+#'
+#' Generates a single, random polygon.
+#'
+#' @param crs    An integer EPSG code specifying the coordinate reference system
+#'               of the polygon to be generated.
+#'               Default: 3395 (World Mercator, https://epsg.io/3395)
+#' @param area   Integer. The approximate area of the polygon to be generated,
+#'               in map units (see `crs`).
+#' @param origin Numeric. The approximate origin coordinates of the polygon to
+#'               be generated (x,y).
+#' @param composite Integer. Higher values take longer, but generate more
+#'                  complex polygons with more sides. See details. Default: 64.
+#' @param square Logical. If `TRUE`, the algorithm tends to create squared
+#'               corners and edges. If this is undesirable, set to `FALSE` (the
+#'               default).
+#'
+#' @details
+#'
+#' `rpolygon()` generates a random tessellation using [mosaic()] and returns a
+#'  random polygon sampled for it. If `composite` > 1, several contiguious tiles
+#'  are dissolved, creating more complex polygons with more sides. The polygon
+#'  may contain holes.
+#'
+#' @return
+#'
+#' An `sf` object containing a single polygon.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' # Simple polygon
+#' polygon <- rpolygon()
+#' plot(polygon)
+#'
+#' # More complex polygon
+#' polygon <- rpolygon(composite = 8)
+#'
+rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
+                     composite = 64, square = FALSE) {
+  xmin <- origin[1]
+  xmax <- origin[1] + sqrt(area*composite*4)
+  ymin <- origin[2]
+  ymax <- origin[2] + sqrt(area*composite*4)
+  cbind(c(xmin, xmax, xmax, xmin, xmin),
+        c(ymin, ymin, ymax, ymax, ymin)) %>%
+    list() %>%
+    sf::st_polygon() %>%
+    sf::st_sfc(crs = crs) %>%
+    sf::st_sf() %>%
+    mosaic(density = 16 * composite) ->
+    mosaic
+
+  if (!square) mosaic <- clip_edges(mosaic)
+
+  if (composite == 1) {
+    mosaic %>%
+      dplyr::sample_n(1) %>%
+      return()
+  }
+  else {
+    mosaic %>%
+      dplyr::slice(grab_geoms(., sf::st_intersects(.), target = composite)) %>%
+      sf::st_union() %>%
+      return()
+  }
+}
+
+#' Gridded survey units
+#'
+#' Generates a regular, rectangular grid of survey units over the frame.
 #'
 #' @param frame
-#' @param orientation
-#' @param density
+#' @param n
 #' @param size
+#' @param orientation
 #'
 #' @return
 #' @export
@@ -11,9 +84,9 @@
 #' @examples
 #'
 #' @importFrom magrittr %>%
-grid <- function(frame, density = NULL, size = NULL, orientation = 0) {
-  if (!missing(density)) {
-    grid <- sf::st_make_grid(frame, n = density)
+gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
+  if (!missing(n)) {
+    grid <- sf::st_make_grid(frame, n = n)
   }
 
   else if (!missing(size)) {
@@ -27,9 +100,11 @@ grid <- function(frame, density = NULL, size = NULL, orientation = 0) {
   #}
 
   grid %>%
-    sf::st_intersection(frame) %>%
     sf::st_sf() %>%
     dplyr::mutate(id = dplyr::row_number()) %>%
+    dplyr::slice(sf::st_intersects(frame, .) %>%
+                   unlist() %>%
+                   unique()) %>%
     return()
 }
 
@@ -103,7 +178,7 @@ mosaic <- function(frame, density = NULL, area = NULL, method = voronoi) {
     }
   }
 
-  do.call(method, list(poly = frame, n = density,
+  do.call(method, list(frame = frame, n = density,
                          warn_multipart = density_specified)) %>%
     return()
 }
@@ -115,9 +190,9 @@ mosaic <- function(frame, density = NULL, area = NULL, method = voronoi) {
 #' within a polygon using Delaunay triangulation. It is essentially a wrapper
 #' for [deldir::deldir()] which outputs a tidy `sf` object.
 #'
-#' @param poly            An `sf` object, or an object that can be converted to
+#' @param frame           An `sf` object, or an object that can be converted to
 #'                        `sf`, within which the tessellation will be performed.
-#' @param n               Desired number of Voronoi tiles; as long as `poly` is
+#' @param n               Desired number of Voronoi tiles; as long as `frame` is
 #'                        contiguous (see `warn_multipart`), the function will
 #'                        always return exactly this number of tiles.
 #' @param warn_multipart  Logical. Set `FALSE` to suppress the warning about
@@ -134,10 +209,10 @@ mosaic <- function(frame, density = NULL, area = NULL, method = voronoi) {
 #' tiles <- voronoi(frame, 50)
 #' plot(tiles)
 #'
-voronoi <- function(poly, n, warn_multipart = TRUE) {
-  poly <- sf::st_as_sf(poly)
+voronoi <- function(frame, n, warn_multipart = TRUE) {
+  frame <- sf::st_as_sf(frame)
   if (warn_multipart &&
-      "MULTIPOLYGON" %in% class(sf::st_geometry(poly))) {
+      "MULTIPOLYGON" %in% class(sf::st_geometry(frame))) {
     warning("Voronoi tessellation cannot reliably generate a fixed number of ",
             "tiles within multipart polygons.")
   }
@@ -145,128 +220,23 @@ voronoi <- function(poly, n, warn_multipart = TRUE) {
   # Generate points
   # st_sample does not return an exact number of points, so iterate and thin
   #   until we have exactly n
-  points <- sf::st_sample(poly, n)
+  points <- sf::st_sample(frame, n)
   while (length(points) < n) {
-    points <- c(points, sf::st_sample(poly, ceiling(n/10)))
+    points <- c(points, sf::st_sample(frame, ceiling(n/10)))
   }
   points <- sample(points, n)
 
   # Perform tessellation
   tess <- deldir::deldir(sf::st_coordinates(points)[,"X"],
                          sf::st_coordinates(points)[,"Y"],
-                         rw = sf::st_bbox(poly)[c("xmin", "xmax", "ymin", "ymax")],
+                         rw = sf::st_bbox(frame)[c("xmin", "xmax", "ymin", "ymax")],
                          suppressMsge = TRUE)
 
   # Convert deldir's gruesome format to sf, clip & return
   tess %>%
-    st_as_sf() %>%
-    sf::st_set_crs(sf::st_crs(poly)) %>%
-    sf::st_intersection(poly) %>%
+    sf::st_as_sf() %>%
+    sf::st_set_crs(sf::st_crs(frame)) %>%
+    sf::st_intersection(frame) %>%
     dplyr::select(id) %>%
     return()
-}
-
-
-#' Random polygon
-#'
-#' Generates a single, random polygon.
-#'
-#' @param crs    An integer EPSG code specifying the coordinate reference system
-#'               of the polygon to be generated.
-#'               Default: 3395 (World Mercator, https://epsg.io/3395)
-#' @param area   Integer. The approximate area of the polygon to be generated,
-#'               in map units (see `crs`).
-#' @param origin Numeric. The approximate origin coordinates of the polygon to
-#'               be generated (x,y).
-#' @param composite Integer. Higher values take longer, but generate more
-#'                  complex polygons with more sides. See details. Default: 64.
-#' @param square Logical. If `TRUE`, the algorithm tends to create squared
-#'               corners and edges. If this is undesirable, set to `FALSE` (the
-#'               default).
-#'
-#' @details
-#'
-#' `rpolygon()` generates a random tessellation using [mosaic()] and returns a
-#'  random polygon sampled for it. If `composite` > 1, several contiguious tiles
-#'  are dissolved, creating more complex polygons with more sides. The polygon
-#'  may contain holes.
-#'
-#' @return
-#'
-#' An `sf` object containing a single polygon.
-#'
-#' @export
-#'
-#' @examples
-#'
-#' # Simple polygon
-#' polygon <- rpolygon()
-#' plot(polygon)
-#'
-#' # More complex polygon
-#' polygon <- rpolygon(composite = 8)
-#'
-rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
-                     composite = 64, square = FALSE) {
-  xmin <- origin[1]
-  xmax <- origin[1] + sqrt(area*composite*4)
-  ymin <- origin[2]
-  ymax <- origin[2] + sqrt(area*composite*4)
-  cbind(c(xmin, xmax, xmax, xmin, xmin),
-        c(ymin, ymin, ymax, ymax, ymin)) %>%
-    list() %>%
-    sf::st_polygon() %>%
-    sf::st_sfc(crs = crs) %>%
-    sf::st_sf() %>%
-    mosaic(density = 16 * composite) ->
-  mosaic
-
-  if (!square) mosaic <- clip_edges(mosaic)
-
-  if (composite == 1) {
-    mosaic %>%
-      dplyr::sample_n(1) %>%
-      return()
-  }
-  else {
-    mosaic %>%
-      dplyr::slice(grab_geoms(., sf::st_intersects(.), target = composite)) %>%
-      sf::st_union() %>%
-      return()
-  }
-}
-
-
-#' Grab geometries
-#'
-#' Recursively selects adjacent (etc.) geometries from a geometric predicate
-#' sparse matrix until the target number of polygons is reached.
-#'
-#' @param adjacency  A geometric predicate list, see [sf::geos_binary_pred()]
-#' @param target     Target number of geometries
-#' @param set        Set of geometries already selected
-#'
-#' @return
-#'
-#' A list of indexes.
-#'
-grab_geoms <- function(mosaic, adjacency, target,
-                       set = sample(1:length(adjacency), 1)) {
-
-  if(target > length(adjacency)) {
-    stop("Can't grab more polygons than there are, you silly sausage.")
-  }
-
-  if(length(set) == 1) adj <- adjacency[[set]] # Avoid the "sample surprise" (see ?sample)
-  else adj <- adjacency[[sample(set, 1)]]
-  set <- c(set, sample(adj, target - length(set), replace = TRUE))
-  set <- unique(set)
-
-
-  if (length(set) < target) {
-    return(grab_geoms(mosaic, adjacency, target, set))
-  }
-  else {
-    return(set)
-  }
 }

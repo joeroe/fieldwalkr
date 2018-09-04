@@ -4,13 +4,13 @@
 \alias{voronoi}
 \title{Random tessellation using Voronoi tiles}
 \usage{
-voronoi(poly, n, warn_multipart = TRUE)
+voronoi(frame, n, warn_multipart = TRUE)
 }
 \arguments{
-\item{poly}{An \code{sf} object, or an object that can be converted to
+\item{frame}{An \code{sf} object, or an object that can be converted to
 \code{sf}, within which the tessellation will be performed.}
 
-\item{n}{Desired number of Voronoi tiles; as long as \code{poly} is
+\item{n}{Desired number of Voronoi tiles; as long as \code{frame} is
 contiguous (see \code{warn_multipart}), the function will
 always return exactly this number of tiles.}
 
