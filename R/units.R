@@ -76,7 +76,7 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' @param frame
 #' @param n
 #' @param size
-#' @param orientation
+#' @param orientation The orientation of the grid in degrees. Default: 0.
 #'
 #' @return
 #' @export
@@ -85,19 +85,33 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #'
 #' @importFrom magrittr %>%
 gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
+  crs <- sf::st_crs(frame)
+
+  if(orientation != 0) {
+    frame_centroid <- sf::st_centroid(frame)
+    rframe <- (frame - frame_centroid) * rotation(-orientation) + frame_centroid
+    sf::st_crs(rframe) <- crs
+  }
+  else rframe <- frame
+
   if (!missing(n)) {
-    grid <- sf::st_make_grid(frame, n = n)
+    grid <- sf::st_make_grid(rframe, n = n)
   }
-
   else if (!missing(size)) {
-    grid <- sf::st_make_grid(frame, cellsize = size)
+    grid <- sf::st_make_grid(rframe, cellsize = size)
+  }
+  else {
+    stop("n or size must be specified.")
   }
 
-  #if(orientation != 0) {
-  #  crs <- sf::st_crs(grid)
-  #  grid <- grid * rotation(orientation)
-  #  sf::st_crs(grid) <- crs
-  #}
+  if(orientation != 0) {
+    grid %>%
+      sf::st_union() %>%
+      sf::st_centroid() ->
+      grid_centroid
+    grid <- (grid - grid_centroid) * rotation(orientation) + grid_centroid
+    sf::st_crs(grid) <- crs
+  }
 
   grid %>%
     sf::st_sf() %>%
