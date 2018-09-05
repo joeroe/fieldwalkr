@@ -38,7 +38,7 @@ Voronoi tessellation using a set of uniformly distributed random points and
 Delaunay triangulation.
 }
 \examples{
-frame <- sf::st_sf(rpolygon())
+frame <- rpolygon()
 
 # Fixed number of units using Voronoi tesselation
 units <- mosaic(frame, density = 50, method = voronoi)

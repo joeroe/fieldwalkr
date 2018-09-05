@@ -27,7 +27,7 @@ within a polygon using Delaunay triangulation. It is essentially a wrapper
 for \code{\link[deldir:deldir]{deldir::deldir()}} which outputs a tidy \code{sf} object.
 }
 \examples{
-frame <- sf::st_sf(rpolygon())
+frame <- rpolygon()
 tiles <- voronoi(frame, 50)
 plot(tiles)
 

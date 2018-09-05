@@ -52,4 +52,8 @@ plot(trans)
 trans <- transects(frame, n = 10, orientation = 90)
 plot(trans)
 
+# Fixed size transects
+trans <- transects(frame, size = 100)
+plot(trans)
+
 }
