@@ -112,6 +112,10 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' trans <- transects(frame, n = 10, orientation = 90)
 #' plot(trans)
 #'
+#' # Fixed size transects
+#' trans <- transects(frame, size = 100)
+#' plot(trans)
+#'
 #' @importFrom magrittr %>%
 gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
   checkmate::assert(checkmate::checkNumber(n), checkmate::checkNull(n))
