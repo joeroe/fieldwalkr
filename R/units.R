@@ -183,6 +183,7 @@ transects <- function(frame, n = NULL, size = NULL, orientation = 0) {
   }
 
   gridded(frame, n = c(n, 1), orientation = orientation) %>%
+    sf::st_intersection(frame) %>%
     return()
 }
 
