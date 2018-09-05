@@ -71,7 +71,10 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 
 #' Gridded survey units
 #'
-#' Generates a regular, rectangular grid of survey units over the frame.
+#' `gridded()` generates a regular, rectangular grid of survey units over a
+#' frame.
+#' `transects()` is a convenience function for when only a single row of units
+#' is desired.
 #'
 #' @param frame       An `sf` survey frame.
 #' @param n           Integer of length 1 or 2; number of units to be generated
@@ -90,16 +93,24 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' frame <- rpolygon()
 #'
 #' # North–south grid
-#' grid <- gridded(frame, n = 10)
+#' grid <- gridded(frame, n = c(10, 10))
 #' plot(grid)
 #'
 #' # NE–SW grid
-#' grid <- gridded(frame, n = 10, orientation = 45)
+#' grid <- gridded(frame, n = c(10, 10), orientation = 45)
 #' plot(grid)
 #'
 #' # Fixed size grid
 #' grid <- gridded(frame, size = 100)
 #' plot(grid)
+#'
+#' # Transects
+#' trans <- transects(frame, n = 10)
+#' plot(trans)
+#'
+#' # East–west transects
+#' trans <- transects(frame, n = 10, orientation = 90)
+#' plot(trans)
 #'
 #' @importFrom magrittr %>%
 gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
@@ -137,6 +148,29 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
     dplyr::slice(sf::st_intersects(frame, .) %>%
                    unlist() %>%
                    unique()) %>%
+    return()
+}
+
+#' @rdname gridded
+#' @export
+transects <- function(frame, n = NULL, size = NULL, orientation = 0) {
+  checkmate::assert(checkmate::checkNumber(n), checkmate::checkNull(n))
+  checkmate::assert(checkmate::checkNumber(size), checkmate::checkNull(size))
+  checkmate::assert_number(orientation)
+
+  if(!missing(n)) {
+    n <- n
+  }
+  else if(!missing(size)) {
+    centroid <- sf::st_centroid(frame)
+    rframe <- (frame - centroid) * rotation(-orientation) + centroid
+    n <- round(diff(sf::st_bbox(rframe)[c(1, 3)]) / size)
+  }
+  else {
+    stop("One of n or size must be specified.")
+  }
+
+  gridded(frame, n = c(n, 1), orientation = orientation) %>%
     return()
 }
 

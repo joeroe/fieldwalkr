@@ -2,9 +2,12 @@
 % Please edit documentation in R/units.R
 \name{gridded}
 \alias{gridded}
+\alias{transects}
 \title{Gridded survey units}
 \usage{
 gridded(frame, n = NULL, size = NULL, orientation = 0)
+
+transects(frame, n = NULL, size = NULL, orientation = 0)
 }
 \arguments{
 \item{frame}{An \code{sf} survey frame.}
@@ -21,21 +24,32 @@ in the x and y directions. See \code{\link[sf:st_make_grid]{sf::st_make_grid()}}
 An \code{sf} grid of survey units.
 }
 \description{
-Generates a regular, rectangular grid of survey units over the frame.
+\code{gridded()} generates a regular, rectangular grid of survey units over a
+frame.
+\code{transects()} is a convenience function for when only a single row of units
+is desired.
 }
 \examples{
 frame <- rpolygon()
 
 # North–south grid
-grid <- gridded(frame, n = 10)
+grid <- gridded(frame, n = c(10, 10))
 plot(grid)
 
 # NE–SW grid
-grid <- gridded(frame, n = 10, orientation = 45)
+grid <- gridded(frame, n = c(10, 10), orientation = 45)
 plot(grid)
 
 # Fixed size grid
 grid <- gridded(frame, size = 100)
 plot(grid)
+
+# Transects
+trans <- transects(frame, n = 10)
+plot(trans)
+
+# East–west transects
+trans <- transects(frame, n = 10, orientation = 90)
+plot(trans)
 
 }
