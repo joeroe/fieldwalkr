@@ -221,7 +221,7 @@ transects <- function(frame, n = NULL, size = NULL, orientation = 0) {
 #' @import rlang
 #'
 #' @examples
-#' frame <- sf::st_sf(rpolygon())
+#' frame <- rpolygon()
 #'
 #' # Fixed number of units using Voronoi tesselation
 #' units <- mosaic(frame, density = 50, method = voronoi)
@@ -284,12 +284,12 @@ mosaic <- function(frame, density = NULL, area = NULL, method = voronoi) {
 #' @export
 #'
 #' @examples
-#' frame <- sf::st_sf(rpolygon())
+#' frame <- rpolygon()
 #' tiles <- voronoi(frame, 50)
 #' plot(tiles)
 #'
 voronoi <- function(frame, n, warn_multipart = TRUE) {
-  frame <- sf::st_as_sf(frame)
+  #frame <- sf::st_as_sf(frame)
   if (warn_multipart &&
       "MULTIPOLYGON" %in% class(sf::st_geometry(frame))) {
     warning("Voronoi tessellation cannot reliably generate a fixed number of ",
