@@ -114,6 +114,10 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #'
 #' @importFrom magrittr %>%
 gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
+  checkmate::assert(checkmate::checkNumber(n), checkmate::checkNull(n))
+  checkmate::assert(checkmate::checkNumber(size), checkmate::checkNull(size))
+  checkmate::assert_number(orientation)
+
   crs <- sf::st_crs(frame)
 
   # Rotate frame
