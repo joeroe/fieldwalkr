@@ -73,20 +73,39 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #'
 #' Generates a regular, rectangular grid of survey units over the frame.
 #'
-#' @param frame
-#' @param n
-#' @param size
-#' @param orientation The orientation of the grid in degrees. Default: 0.
+#' @param frame       An `sf` survey frame.
+#' @param n           Integer of length 1 or 2; number of units to be generated
+#'                    in the x and y directions. See [sf::st_make_grid()].
+#' @param size        Target size of the grid (in one dimension). See
+#'                    [sf::st_make_grid()].
+#' @param orientation Integer; the orientation of the grid in degrees. Default: 0.
 #'
 #' @return
+#'
+#' An `sf` grid of survey units.
+#'
 #' @export
 #'
 #' @examples
+#' frame <- rpolygon()
+#'
+#' # North–south grid
+#' grid <- gridded(frame, n = 10)
+#' plot(grid)
+#'
+#' # NE–SW grid
+#' grid <- gridded(frame, n = 10, orientation = 45)
+#' plot(grid)
+#'
+#' # Fixed size grid
+#' grid <- gridded(frame, size = 100)
+#' plot(grid)
 #'
 #' @importFrom magrittr %>%
 gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
   crs <- sf::st_crs(frame)
 
+  # Rotate frame
   if(orientation != 0) {
     centroid <- sf::st_centroid(frame)
     rframe <- (frame - centroid) * rotation(-orientation) + centroid
@@ -94,6 +113,7 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
   }
   else rframe <- frame
 
+  # Generate grid
   if (!missing(n)) {
     grid <- sf::st_make_grid(rframe, n = n)
   }
@@ -104,11 +124,13 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
     stop("n or size must be specified.")
   }
 
+  # Un-rotate grid
   if(orientation != 0) {
     grid <- (grid - centroid) * rotation(orientation) + centroid
     sf::st_crs(grid) <- crs
   }
 
+  # Return intersection of grid and frame
   grid %>%
     sf::st_sf() %>%
     dplyr::mutate(id = dplyr::row_number()) %>%

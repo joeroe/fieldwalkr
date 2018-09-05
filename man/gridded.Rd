@@ -7,11 +7,35 @@
 gridded(frame, n = NULL, size = NULL, orientation = 0)
 }
 \arguments{
-\item{orientation}{}
+\item{frame}{An \code{sf} survey frame.}
+
+\item{n}{Integer of length 1 or 2; number of units to be generated
+in the x and y directions. See \code{\link[sf:st_make_grid]{sf::st_make_grid()}}.}
+
+\item{size}{Target size of the grid (in one dimension). See
+\code{\link[sf:st_make_grid]{sf::st_make_grid()}}.}
+
+\item{orientation}{Integer; the orientation of the grid in degrees. Default: 0.}
+}
+\value{
+An \code{sf} grid of survey units.
 }
 \description{
 Generates a regular, rectangular grid of survey units over the frame.
 }
 \examples{
+frame <- rpolygon()
+
+# North–south grid
+grid <- gridded(frame, n = 10)
+plot(grid)
+
+# NE–SW grid
+grid <- gridded(frame, n = 10, orientation = 45)
+plot(grid)
+
+# Fixed size grid
+grid <- gridded(frame, size = 100)
+plot(grid)
 
 }
