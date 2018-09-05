@@ -88,8 +88,8 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
   crs <- sf::st_crs(frame)
 
   if(orientation != 0) {
-    frame_centroid <- sf::st_centroid(frame)
-    rframe <- (frame - frame_centroid) * rotation(-orientation) + frame_centroid
+    centroid <- sf::st_centroid(frame)
+    rframe <- (frame - centroid) * rotation(-orientation) + centroid
     sf::st_crs(rframe) <- crs
   }
   else rframe <- frame
@@ -105,11 +105,7 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
   }
 
   if(orientation != 0) {
-    grid %>%
-      sf::st_union() %>%
-      sf::st_centroid() ->
-      grid_centroid
-    grid <- (grid - grid_centroid) * rotation(orientation) + grid_centroid
+    grid <- (grid - centroid) * rotation(orientation) + centroid
     sf::st_crs(grid) <- crs
   }
 
