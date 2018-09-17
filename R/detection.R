@@ -1,5 +1,10 @@
 # DETECTION FUNCTIONS ----------------------------------------------------------
 
+#' @export
+detect_perfect <- function(f) {
+  return(f)
+}
+
 # Detect points by applying a simple detection rate
 #' @export
 detect_simple <- function(f, rate=1) {
