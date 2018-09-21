@@ -8,6 +8,3 @@ It contains functions for simulating the effect of different survey units, sampl
 ```{r}
 devtools::install_github("joeroe/fieldwalkr")
 ```
-
-The package is in an early stage of development.
-I wouldn't recommend writing any serious code that depends on it yet, but you may find some functions useful.

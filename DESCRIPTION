@@ -1,8 +1,8 @@
 Package: fieldwalkr
 Type: Package
 Title: Spatial Sampling and Survey Simulation Tools
-Version: 0.2
-Date: 2016-02-21
+Version: 0.3
+Date: 2018-09-21
 Authors@R: person("Joe", "Roe", email = "jwg983@hum.ku.dk",
   role = c("aut", "cre"))
 Description: fieldwalkr is a simulation framework for exploring, designing, and
