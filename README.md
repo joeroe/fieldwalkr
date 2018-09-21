@@ -11,7 +11,3 @@ devtools::install_github("joeroe/fieldwalkr")
 
 The package is in an early stage of development.
 I wouldn't recommend writing any serious code that depends on it yet, but you may find some functions useful.
-
-## Example
-
-See `vignettes/lunch_in_the_lab.R` for an example R script, originally presented at the UCL Institute of Archaeology's *Lunch in the Lab* meeting in February 2016.

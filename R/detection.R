@@ -1,5 +1,6 @@
 # DETECTION FUNCTIONS ----------------------------------------------------------
 
+# Detect all points in a unit
 #' @export
 detect_perfect <- function(unit, points) {
   unit <- sf::st_sfc(unit, crs = sf::st_crs(points))
