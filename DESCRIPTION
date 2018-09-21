@@ -1,7 +1,7 @@
 Package: fieldwalkr
 Type: Package
-Title: Spatial Sampling and Survey Simulation Tools
-Version: 0.3
+Title: Spatial Sampling and Survey Simulation
+Version: 0.3.1
 Date: 2018-09-21
 Authors@R: person("Joe", "Roe", email = "jwg983@hum.ku.dk",
   role = c("aut", "cre"))
