@@ -26,7 +26,7 @@ library(magrittr)
 library(ggplot2)
 
 rpolygon() \%>\%
-  gridded(n = c(10, 10)) \%>\%
+  quadrats(n = c(10, 10)) \%>\%
   sample_systematic(n = 10) \%>\%
   ggplot(aes(fill = sample)) + geom_sf()
 }

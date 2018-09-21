@@ -20,7 +20,7 @@
 #' library(ggplot2)
 #'
 #' rpolygon() %>%
-#'   gridded(n = c(10, 10)) %>%
+#'   quadrats(n = c(10, 10)) %>%
 #'   sample_random(n = 50) %>%
 #'   ggplot(aes(fill = sample)) + geom_sf()
 sample_random <- function(units, n = NULL, fraction = NULL, column = "sample") {
@@ -64,7 +64,7 @@ sample_random <- function(units, n = NULL, fraction = NULL, column = "sample") {
 #' library(ggplot2)
 #'
 #' rpolygon() %>%
-#'   gridded(n = c(10, 10)) %>%
+#'   quadrats(n = c(10, 10)) %>%
 #'   sample_systematic(n = 10) %>%
 #'   ggplot(aes(fill = sample)) + geom_sf()
 sample_systematic <- function(units, n, start = 1, column = "sample") {

@@ -71,7 +71,7 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 
 #' Gridded survey units
 #'
-#' `gridded()` generates a regular, rectangular grid of survey units over a
+#' `quadrats()` generates a regular, rectangular grid of survey units over a
 #' frame.
 #' `transects()` is a convenience function for when only a single row of units
 #' is desired.
@@ -93,15 +93,15 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' frame <- rpolygon()
 #'
 #' # North–south grid
-#' grid <- gridded(frame, n = c(10, 10))
+#' grid <- quadrats(frame, n = c(10, 10))
 #' plot(grid)
 #'
 #' # NE–SW grid
-#' grid <- gridded(frame, n = c(10, 10), orientation = 45)
+#' grid <- quadrats(frame, n = c(10, 10), orientation = 45)
 #' plot(grid)
 #'
 #' # Fixed size grid
-#' grid <- gridded(frame, size = 100)
+#' grid <- quadrats(frame, size = 100)
 #' plot(grid)
 #'
 #' # Transects
@@ -117,7 +117,7 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' plot(trans)
 #'
 #' @importFrom magrittr %>%
-gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
+quadrats <- function(frame, n = NULL, size = NULL, orientation = 0) {
   checkmate::assert(checkmate::checkNumber(n),
                     checkmate::checkNumeric(n),
                     checkmate::checkNull(n))
@@ -163,7 +163,7 @@ gridded <- function(frame, n = NULL, size = NULL, orientation = 0) {
     return()
 }
 
-#' @rdname gridded
+#' @rdname quadrats
 #' @export
 transects <- function(frame, n = NULL, size = NULL, orientation = 0) {
   checkmate::assert(checkmate::checkNumber(n), checkmate::checkNull(n))
