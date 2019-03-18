@@ -182,7 +182,7 @@ transects <- function(frame, n = NULL, size = NULL, orientation = 0) {
     stop("One of n or size must be specified.")
   }
 
-  gridded(frame, n = c(n, 1), orientation = orientation) %>%
+  fieldwalkr::quadrats(frame, n = c(n, 1), orientation = orientation) %>%
     sf::st_intersection(frame) %>%
     return()
 }
