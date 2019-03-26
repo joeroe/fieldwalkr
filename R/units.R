@@ -92,11 +92,11 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' @examples
 #' frame <- rpolygon()
 #'
-#' # North–south grid
+#' # North-south grid
 #' grid <- quadrats(frame, n = c(10, 10))
 #' plot(grid)
 #'
-#' # NE–SW grid
+#' # NE-SW grid
 #' grid <- quadrats(frame, n = c(10, 10), orientation = 45)
 #' plot(grid)
 #'
@@ -108,7 +108,7 @@ rpolygon <- function(crs = 3395, origin = c(0,0), area = 100000,
 #' trans <- transects(frame, n = 10)
 #' plot(trans)
 #'
-#' # East–west transects
+#' # East-west transects
 #' trans <- transects(frame, n = 10, orientation = 90)
 #' plot(trans)
 #'

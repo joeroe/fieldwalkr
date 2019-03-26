@@ -26,4 +26,4 @@ Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack
 URL: https://github.com/joeroe/fieldwalkr
 BugReports: https://github.com/joeroe/fieldwalkr/issues
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

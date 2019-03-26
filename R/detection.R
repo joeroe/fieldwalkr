@@ -13,7 +13,7 @@ detect_perfect <- function(unit, points) {
 
 # Detect points by applying a simple detection rate
 #' @export
-detect_simple <- function(unit, points, rate = 1) {
+detect_rate <- function(unit, points, rate = 1) {
   detect_perfect(unit, points) %>%
     dplyr::sample_frac(rate) %>%
     return()
@@ -22,8 +22,7 @@ detect_simple <- function(unit, points, rate = 1) {
 # Detect points by applying a uniform stochastic detection rate
 #' @export
 detect_random <- function(unit, points, min = 0, max = 1) {
-  detect_simple(unit, points, rate = runif(1,min,max)) %>%
-    return()
+  return(detect_rate(unit, points, rate = runif(1,min,max)))
 }
 
 # Detect points by applying a (truncated) normal stochastic detection rate
@@ -34,8 +33,46 @@ detect_normal <- function(unit, points, mean = 0.5, sd = 0.2) {
     if(rate > 0 && rate < 1) break
   }
 
-  detect_simple(unit, points, rate = rate) %>%
-    return()
+  return(detect_rate(unit, points, rate = rate))
+}
+
+#' Detection Function: Law of Random Search
+#'
+#' @param unit
+#' @param points
+#' @param time
+#' @param g
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' @references
+#'
+#' * \insertRef{Banning2002-uv}{fieldwalkr}
+#' * \insertRef{Banning2011-wo}{fieldwalkr}
+detect_random_search <- function(unit, points, time, g) {
+  rate <- 1 - exp(-g * time)
+  return(detect_rate(unit, points, rate))
+}
+
+#' Detection Function: Sweep Width
+#'
+#' @param unit
+#' @param points
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' @references
+#'
+#' * \insertRef{Banning2011-wo}{fieldwalkr}
+detect_sweep <- function(unit, points, b, k, r) {
+  rate <- b - exp(-k * r^2)
+  return(detect_rate(unit, points, rate))
 }
 
 # TODO:
