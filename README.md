@@ -1,5 +1,7 @@
 # fieldwalkr
 
+[![Project Status: Suspended – Initial development has started, but there has not yet been a stable, usable release; work has been stopped for the time being but the author(s) intend on resuming work.](https://www.repostatus.org/badges/latest/suspended.svg)](https://www.repostatus.org/#suspended)
+
 `fieldwalkr` is a tool for designing and evaluating sampling strategies in spatial survey (*fieldwalking* in archaeological jargon).
 It contains functions for simulating the effect of different survey units, sampling methods and detection functions on the estimation of randomly generated or observed point processes.
 
