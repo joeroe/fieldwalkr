@@ -22,14 +22,15 @@
 #'
 #' @examples
 survey <- function(points, units, sample_column = sample,
-                   detection_function = detect_perfect, ...) {
+                   detection_function = detect_constant, ...) {
   sample <- rlang::quo(sample_column)
 
   units %>%
     dplyr::filter(sample == TRUE) %>%
+    dplyr::mutate(.p = detectetion_function) %>%
     sf::st_geometry() %>%
     # Workaround for https://github.com/tidyverse/dplyr/issues/2457
-    {purrr::quietly(purrr::map_dfr)}(detection_function, points = points, ...) %>%
+    {purrr::quietly(purrr::map_dfr)}(detect, points = points, p = .p) %>%
     magrittr::extract2("result") %>%
     sf::st_as_sf() %>%
     sf::st_set_crs(sf::st_crs(points)) %>%

@@ -1,0 +1,58 @@
+---
+title: "Detection probability"
+author: "Joe Roe"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Detection probability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: ../inst/REFERENCES.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, let's load `fieldwalkr` and generate some some dummy data to simulate a survey.
+
+```{r, fig.show='hold'}
+library("fieldwalkr")
+library("sf")
+library("ggplot2")
+
+frame <- rpolygon()                   # Sample frame
+sites <- st_sample(frame, 100)        # Target points
+units <- quadrats(frame, size = 200)  # Survey units
+
+# Plot
+theme_nocoords <- function() {
+  return(theme(axis.text = element_blank()))
+}
+
+ggplot() + 
+  geom_sf(data = frame, fill = "white") +
+  geom_sf(data = sites) +
+  ggtitle("sites") +
+  theme_nocoords()
+
+ggplot() + 
+  geom_sf(data = frame, fill = "white") + 
+  geom_sf(data = units, fill = NA) +
+  ggtitle("units") +
+  theme_nocoords()
+```
+
+## Detection functions
+
+Modelling detection probability in `fieldwalkr` employs the concept of a *detection functions*.
+This concept is drawn from search theory, and specifically Banning and colleague's application of search theory to archaeological survey [@Banning2002-uv; @Banning2006-js; @Banning2011-wo].
+
+### 
+
+### Custom detection functions
+
+## References

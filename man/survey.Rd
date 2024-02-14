@@ -5,7 +5,7 @@
 \title{Simulate a survey}
 \usage{
 survey(points, units, sample_column = sample,
-  detection_function = detect_perfect, ...)
+  detection_function = detect_constant, ...)
 }
 \arguments{
 \item{points}{An \code{sf} of points to be surveyed}

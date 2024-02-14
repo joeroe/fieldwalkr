@@ -1,22 +1,20 @@
 # DETECTION FUNCTIONS ----------------------------------------------------------
 
-# Detect all points in a unit
-#' @export
-detect_perfect <- function(unit, points) {
+# Sample a fraction of points in a unit
+detect <- function(unit, points, p = 1) {
   unit <- sf::st_sfc(unit, crs = sf::st_crs(points))
   points %>%
     sf::st_intersection(unit) %>%
     # Workaround for https://github.com/tidyverse/dplyr/issues/2457
     dplyr::as_tibble() %>%
+    dplyr::sample_frac(rate) %>%
     return()
 }
 
-# Detect points by applying a simple detection rate
+# Detect points by applying a constant detection rate
 #' @export
-detect_rate <- function(unit, points, rate = 1) {
-  detect_perfect(unit, points) %>%
-    dplyr::sample_frac(rate) %>%
-    return()
+detect_constant <- function(rate = 1) {
+  return(rate)
 }
 
 # Detect points by applying a uniform stochastic detection rate
